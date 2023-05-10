@@ -75,9 +75,11 @@ def create_category():
 
     return CategoryController.store(request, filename=hashed_filename)
 
-# @app.route('/categories', methods=['GET'])
-# def get_categories():
-#     return CategoryController().index(request)
+@app.route('/categories', methods=['GET'])
+@cross_origin()
+@jwt_required()
+def get_categories():
+    return CategoryController.index(request)
 
 # @app.route('/categories/<int:id>', methods=['PUT'])
 # def update_category(id):

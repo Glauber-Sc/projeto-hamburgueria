@@ -1,5 +1,5 @@
 from os import remove, path
-from flask import Request
+from flask import Request, jsonify
 from cerberus import Validator
 from flask_jwt_extended import get_jwt_identity
 from app.connections.database import User, Category
@@ -9,7 +9,6 @@ class CategoryController:
     @orm.db_session
     def store(request: Request, filename: str):
         file_path = 'uploads/categories/' + filename
-        print(file_path)
         schema = {
             'name': {'type': 'string', 'required': True}      
         }
@@ -41,3 +40,10 @@ class CategoryController:
             "id": category.id,
             "path": category.path
         }
+
+    @orm.db_session
+    def index(request: Request):
+        categoriesFound = orm.select(c for c in Category)[:]
+        categories = [t.to_dict() for t in categoriesFound]         
+
+        return jsonify(categories)
