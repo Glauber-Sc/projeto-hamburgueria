@@ -58,12 +58,16 @@ def create_product():
 def get_products():
     return ProductController.index(request)
 
-# @app.route('/products/<int:id>', methods=['PUT'])
-# def update_product(id):
-#     f = request.files['file']
-#     filename = secure_filename(f.filename)
-#     f.save(filename)
-#     return ProductController().update(request, id, filename)
+@app.route('/products/<int:id>', methods=['PUT'])
+@cross_origin()
+@jwt_required()
+def update_product(id):
+    f = request.files['file']
+    filename = secure_filename(f.filename)
+    hashed_filename = hashFilename(filename) + filename    
+    f.save(dst=f"uploads/products/{hashed_filename}")
+
+    return ProductController.update(request, id, filename=hashed_filename)
 
 #   CATEGORIES
 

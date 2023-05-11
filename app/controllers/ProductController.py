@@ -39,7 +39,7 @@ class ProductController:
             name=product_name,
             price=product_price,
             path=filename,
-            offer=product_offer
+            offer=True if product_offer == 'true' else False
         )
         product.category = category
 
@@ -53,3 +53,50 @@ class ProductController:
         products = [t.to_dict() for t in productsFound]         
 
         return jsonify(products)
+    
+    @orm.db_session
+    def update(request: Request, product_id: int, filename: str):
+        file_path = 'uploads/products/' + filename
+        schema = {
+            'name': {'type': 'string', 'required': True},     
+            'price': {'type': 'string', 'required': True},   
+            'category_id': {'type': 'string', 'required': True},
+            'offer': {'type': 'string', 'required': True},     
+        }
+
+        validator = Validator(schema)
+        is_valid = validator.validate(request.form)
+                
+        if not is_valid:
+            if path.exists(file_path): remove(file_path)
+            return { "error": "Make sure you inputted the correct body" }, 400
+        
+        product_name, product_price = request.form['name'], request.form['price']
+        product_category_id, product_offer = request.form['category_id'], request.form['offer']
+
+        category = Category.get(id=product_category_id);        
+        userId = get_jwt_identity()
+        user = User.get(id=userId)
+
+        product = orm.select(p for p in Product if p.id == product_id).first()
+
+        old_file_path = 'uploads/products/' + product.path
+
+        if not product:
+            return { "error": "Make sure your product id is correct" }, 401
+
+        if not user.admin:
+            if path.exists(file_path): remove(file_path)
+            return { "error": "You are not authorized to perform this action" }, 401
+
+        product.name = product_name
+        product.path = filename
+        product.price = product_price
+        product.offer = True if product_offer == 'true' else False
+        product.category = category
+
+        orm.commit();
+
+        if path.exists(old_file_path): remove(old_file_path)
+
+        return {}, 200
