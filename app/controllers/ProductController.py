@@ -45,4 +45,11 @@ class ProductController:
 
         orm.commit();
 
-        return jsonify(product.to_dict()), 201 
+        return jsonify(product.to_dict()), 201
+    
+    @orm.db_session
+    def index(request: Request):
+        productsFound = orm.select(p for p in Product)[:]
+        products = [t.to_dict() for t in productsFound]         
+
+        return jsonify(products)

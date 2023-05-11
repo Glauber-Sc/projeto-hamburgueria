@@ -52,9 +52,11 @@ def create_product():
     
     return ProductController.store(request, filename=hashed_filename)
 
-# @app.route('/products', methods=['GET'])
-# def get_products():
-#     return ProductController().index(request)
+@app.route('/products', methods=['GET'])
+@cross_origin()
+@jwt_required()
+def get_products():
+    return ProductController.index(request)
 
 # @app.route('/products/<int:id>', methods=['PUT'])
 # def update_product(id):
