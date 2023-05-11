@@ -1,4 +1,3 @@
-import os
 from app.utils.hashFilename import hashFilename
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS, cross_origin
@@ -11,13 +10,10 @@ from app.controllers.UserController import UserController
 # from app.controllers.OrderController import OrderController
 # from app.middlewares.auth import authMiddleware
 
-UPLOAD_FOLDER = os.path.abspath('uploads');
-
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['JWT_SECRET_KEY'] = '1234'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 jwt = JWTManager(app)
 
@@ -81,12 +77,16 @@ def create_category():
 def get_categories():
     return CategoryController.index(request)
 
-# @app.route('/categories/<int:id>', methods=['PUT'])
-# def update_category(id):
-#     f = request.files['file']
-#     filename = secure_filename(f.filename)
-#     f.save(filename)
-#     return CategoryController().update(request, id, filename)
+@app.route('/categories/<int:id>', methods=['PUT'])
+@cross_origin()
+@jwt_required()
+def update_category(id):
+    f = request.files['file']
+    filename = secure_filename(f.filename)
+    hashed_filename = hashFilename(filename) + filename    
+    f.save(dst=f"uploads/categories/{hashed_filename}")
+
+    return CategoryController.update(request, id, filename=hashed_filename)
 
 #   ORDERS
 
