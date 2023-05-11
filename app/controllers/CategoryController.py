@@ -22,6 +22,7 @@ class CategoryController:
                 
         userId = get_jwt_identity()
         user = User.get(id=userId)
+        
         categoryName = request.form['name']     
 
         if not user.admin:
@@ -63,7 +64,8 @@ class CategoryController:
             return { "error": "Make sure you inputted the correct body" }, 400
         
         userId = get_jwt_identity()
-        user = User.get(id=userId)   
+        user = User.get(id=userId)
+
         category = orm.select(c for c in Category if c.id == category_id).first()
         old_file_path = 'uploads/categories/' + category.path
         category_name = request.form['name']     
