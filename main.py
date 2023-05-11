@@ -18,9 +18,14 @@ app.config['JWT_SECRET_KEY'] = '1234'
 jwt = JWTManager(app)
 
 #   IMAGES
+
 @app.route('/category-images/<path:filename>', methods=['GET'])
 def serve_category_images(filename):
     return send_from_directory(f"uploads/categories", filename)
+
+@app.route('/product-images/<path:filename>', methods=['GET'])
+def serve_product_images(filename):
+    return send_from_directory(f"uploads/products", filename)
 
 #   USERS AND SESSION
 
@@ -43,7 +48,7 @@ def create_product():
     f = request.files['file']
     filename = secure_filename(f.filename)
     hashed_filename = hashFilename(filename) + filename    
-    f.save(dst=f"uploads/{hashed_filename}")
+    f.save(dst=f"uploads/products/{hashed_filename}")
     
     return ProductController.store(request, filename=hashed_filename)
 
