@@ -12,6 +12,8 @@ class User(db.Entity):
     password_hash = orm.Required(str)
     admin = orm.Required(bool)
 
+    orders = orm.Set("Order")
+
 
 class Category(db.Entity):
     _table_ = "categories"
@@ -30,7 +32,26 @@ class Product(db.Entity):
     price = orm.Required(str)
     path = orm.Optional(str)
     offer = orm.Required(bool)
-    category = orm.Optional(Category)
+    category_id = orm.Optional(Category)
+    items = orm.Set("OrderItem")
 
+
+class Order(db.Entity):
+    _table_ = "orders"
+
+    id = orm.PrimaryKey(int, auto=True)
+    status = orm.Required(bool)
+    user_id = orm.Required(User)
+    items = orm.Set("OrderItem")
+
+
+class OrderItem(db.Entity):
+    _table_ = "order_items"
+
+    id = orm.PrimaryKey(int, auto=True) 
+    order_id = orm.Required(Order)
+    product_id = orm.Required(Product)
     
+
+print("Generating mappings")  
 db.generate_mapping(create_tables=True)

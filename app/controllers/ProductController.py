@@ -41,7 +41,7 @@ class ProductController:
             path=filename,
             offer=True if product_offer == 'true' else False
         )
-        product.category = category
+        product.category_id = category
 
         orm.commit();
 
@@ -93,7 +93,7 @@ class ProductController:
         product.path = filename
         product.price = product_price
         product.offer = True if product_offer == 'true' else False
-        product.category = category
+        product.category_id = category
 
         orm.commit();
 
