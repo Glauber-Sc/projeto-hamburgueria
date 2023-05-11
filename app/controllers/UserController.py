@@ -36,7 +36,7 @@ class UserController:
             name=userData['name'],
             email=userData['email'],
             password_hash=hashed_password,
-            admin=False            
+            admin=userData['admin']            
         )
         orm.commit()
 
