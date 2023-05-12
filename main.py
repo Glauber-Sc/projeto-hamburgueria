@@ -110,9 +110,11 @@ def create_order():
 # def update_order(id):
 #     return OrderController().update(request, id)
 
-# @app.route('/orders', methods=['GET'])
-# def get_orders():
-#     return OrderController().index(request)
+@app.route('/orders', methods=['GET'])
+@cross_origin()
+@jwt_required()
+def get_orders():
+    return OrderController.index(request)
 
-# if __name__ == '__main__':
-#     app.run()
+if __name__ == '__main__':
+    app.run()

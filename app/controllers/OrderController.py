@@ -86,12 +86,11 @@ class OrderController:
      
     @orm.db_session
     def index(request: Request):
-        productsFound = orm.select(p for p in Product)[:]
-        products = [t.to_dict() for t in productsFound]         
+        ordersFound = orm.select(o for o in Order)[:]
+        orders = [t.to_dict() for t in ordersFound]
 
-        return jsonify(products)
-    
-    @orm.db_session
+        return jsonify(orders)
+
     def update(request: Request, product_id: int, filename: str):
         file_path = 'uploads/products/' + filename
         schema = {
