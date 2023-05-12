@@ -11,8 +11,7 @@ class UserController:
         schema = {
             'name': { 'type': 'string', 'required': True },
             'email': { 'type': 'string', 'required': True },
-            'password': { 'type': 'string', 'required': True, 'valuesrules': { 'min': 6 } },
-            'admin': { 'type': 'boolean' }
+            'password': { 'type': 'string', 'required': True, 'valuesrules': { 'min': 6 } }
         }
         validator = Validator(schema)
         is_valid = validator.validate(request.json)
@@ -36,7 +35,7 @@ class UserController:
             name=userData['name'],
             email=userData['email'],
             password_hash=hashed_password,
-            admin=userData['admin']            
+            admin=False          
         )
         orm.commit()
 

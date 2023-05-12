@@ -14,8 +14,7 @@ class ProductController:
         schema = {
             'name': {'type': 'string', 'required': True},
             'price': {'type': 'string', 'required': True},
-            'category_id': {'type': 'string', 'required': True},
-            'offer': {'type': 'string', 'required': True},            
+            'category_id': {'type': 'string', 'required': True}
         }
         validator = Validator(schema)
         is_valid = validator.validate(form)
@@ -33,13 +32,12 @@ class ProductController:
         
         category = Category.get(id=form['category_id']);        
  
-        product_name, product_price, product_offer = form['name'], form['price'], form['offer']
+        product_name, product_price = form['name'], form['price']
 
         product = Product(
             name=product_name,
             price=product_price,
-            path=filename,
-            offer=True if product_offer == 'true' else False
+            path=filename
         )
         product.category_id = category
 
@@ -67,6 +65,7 @@ class ProductController:
             'price': {'type': 'string', 'required': True},   
             'category_id': {'type': 'string', 'required': True},
             'offer': {'type': 'string', 'required': True},     
+            'file': {'type': 'string', 'required': False},     
         }
 
         validator = Validator(schema)

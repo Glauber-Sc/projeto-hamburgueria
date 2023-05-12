@@ -1,4 +1,6 @@
+import pytz
 from pony import orm
+from datetime import datetime
 
 db = orm.Database()
 db.bind(provider='postgres', user='postgres', password='1234', host='localhost', database='hamburgueria')
@@ -31,7 +33,7 @@ class Product(db.Entity):
     name = orm.Required(str)
     price = orm.Required(str)
     path = orm.Optional(str)
-    offer = orm.Required(bool)
+    offer = orm.Optional(bool)
     category_id = orm.Optional(Category)
     items = orm.Set("OrderItem")
 
@@ -40,9 +42,10 @@ class Order(db.Entity):
     _table_ = "orders"
 
     id = orm.PrimaryKey(int, auto=True)
-    status = orm.Required(bool)
+    status = orm.Optional(str, default="Pedido realizado")
     user_id = orm.Required(User)
     items = orm.Set("OrderItem")
+    createdAt = orm.Required(datetime, default=datetime.now(pytz.timezone('America/Sao_Paulo')))
 
 
 class OrderItem(db.Entity):

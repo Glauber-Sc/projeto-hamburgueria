@@ -30,8 +30,7 @@ class OrderController:
         order_products = list();
 
         order = Order(
-            user_id=userId,
-            status=True
+            user_id=userId
         )
 
         for id in productsIds:
@@ -87,14 +86,40 @@ class OrderController:
     @orm.db_session
     def index(request: Request):
         ordersFound = orm.select(o for o in Order)[:]
-        orders = [t.to_dict() for t in ordersFound]
+        orders = list()
+
+        for orderFound in ordersFound:
+            order = dict()
+            user = orderFound.user_id
+            items = OrderItem.select(lambda oi: oi.order_id == orderFound)[:]
+            products = list()
+
+            for item in items:
+                product = item.product_id.to_dict()
+                product_category = item.product_id.category_id
+                product['quantity'] = item.quantity
+                product['category'] = product_category.name
+                product['url'] = f'http://localhost:3000/product-images/{product["path"]}'                
+                products.append(product)
+            
+            order['_id'] = orderFound.id
+            order['status'] = orderFound.status
+            order['createdAt'] = orderFound.createdAt
+            order['products'] = products
+            order['user'] = {
+                "id": user.id,
+                "name": user.name
+            }
+
+            orders.append(order)
+
 
         return jsonify(orders)
 
     @orm.db_session
     def update(request: Request, order_id: str):
         schema = {
-            'status': {'type': 'boolean', 'required': True},    
+            'status': {'type': 'string', 'required': True},    
         }
 
         validator = Validator(schema)
@@ -115,7 +140,7 @@ class OrderController:
         if not order:
             return { "error": "Make sure your order id is correct" }, 400
 
-        order.status = new_status == True
+        order.status = new_status
 
         orm.commit();        
 
