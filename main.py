@@ -106,15 +106,14 @@ def update_category(id):
 def create_order():
     return OrderController.store(request)
 
-# @app.route('/orders/<int:id>', methods=['PUT'])
-# def update_order(id):
-#     return OrderController().update(request, id)
+@app.route('/orders/<int:id>', methods=['PUT'])
+@cross_origin()
+@jwt_required()
+def update_order(id):
+    return OrderController.update(request, id)
 
 @app.route('/orders', methods=['GET'])
 @cross_origin()
 @jwt_required()
 def get_orders():
     return OrderController.index(request)
-
-if __name__ == '__main__':
-    app.run()
