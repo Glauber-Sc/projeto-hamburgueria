@@ -45,7 +45,12 @@ class CategoryController:
     @orm.db_session
     def index(request: Request):
         categoriesFound = orm.select(c for c in Category)[:]
-        categories = [t.to_dict() for t in categoriesFound]         
+        categories = list()
+
+        for category in categoriesFound:
+            category_dict = category.to_dict()
+            category_dict['url'] = f'http://localhost:3000/category-images/{category_dict["path"]}'
+            categories.append(category_dict)
 
         return jsonify(categories)
 

@@ -58,7 +58,7 @@ class OrderController:
             products.append(product)
         
         for product in products:
-            url = f'http://localhost:5000/product-images/{product["path"]}'
+            url = f'http://localhost:3000/product-images/{product["path"]}'
 
             new_product = {
                 "id": product['id'],
