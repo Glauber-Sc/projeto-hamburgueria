@@ -7,8 +7,7 @@ from app.controllers.ProductController import ProductController
 from app.controllers.SessionController import SessionController
 from app.controllers.CategoryController import CategoryController
 from app.controllers.UserController import UserController
-# from app.controllers.OrderController import OrderController
-# from app.middlewares.auth import authMiddleware
+from app.controllers.OrderController import OrderController
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -101,9 +100,11 @@ def update_category(id):
 
 #   ORDERS
 
-# @app.route('/orders', methods=['POST'])
-# def create_order():
-#     return OrderController().store(request)
+@app.route('/orders', methods=['POST'])
+@cross_origin()
+@jwt_required()
+def create_order():
+    return OrderController.store(request)
 
 # @app.route('/orders/<int:id>', methods=['PUT'])
 # def update_order(id):

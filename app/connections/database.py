@@ -51,6 +51,7 @@ class OrderItem(db.Entity):
     id = orm.PrimaryKey(int, auto=True) 
     order_id = orm.Required(Order)
     product_id = orm.Required(Product)
+    quantity = orm.Required(int)
     
 
 print("Generating mappings")  
