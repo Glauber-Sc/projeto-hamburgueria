@@ -49,7 +49,7 @@ class CategoryController:
 
         for category in categoriesFound:
             category_dict = category.to_dict()
-            category_dict['url'] = f'http://localhost:3000/category-images/{category_dict["path"]}'
+            category_dict['url'] = f'http://192.168.15.34:3000/category-images/{category_dict["path"]}'
             categories.append(category_dict)
 
         return jsonify(categories)
