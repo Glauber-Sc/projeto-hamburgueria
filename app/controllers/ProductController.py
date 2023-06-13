@@ -58,7 +58,7 @@ class ProductController:
 
         for product in productsFound:
             product_dict = product.to_dict()
-            product_dict['url'] = f'http://10.0.9.4:3000/product-images/{product_dict["path"]}'
+            product_dict['url'] = f'http://10.0.9.5:3000/product-images/{product_dict["path"]}'
             products.append(product_dict)
 
         return jsonify(products)

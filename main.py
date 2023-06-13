@@ -76,15 +76,11 @@ def update_product(id):
     return ProductController.update(request, id, filename=hashed_filename)
 
 
-
-
 @app.route('/products/<int:id>', methods=['DELETE'])
 @cross_origin()
 @jwt_required()
 def delete_product(id):
     return ProductController.delete(id)
-
-
 
 
 #   CATEGORIES
@@ -117,6 +113,14 @@ def update_category(id):
     f.save(dst=f"uploads/categories/{hashed_filename}")
 
     return CategoryController.update(request, id, filename=hashed_filename)
+
+
+
+@app.route('/categories/<int:category_id>', methods=['DELETE'])
+@cross_origin()
+@jwt_required()
+def delete_category(category_id):
+    return CategoryController.delete(request, category_id)
 
 #   ORDERS
 

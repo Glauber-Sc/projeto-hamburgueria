@@ -34,8 +34,8 @@ class CategoryController:
             if path.exists(file_path): remove(file_path)
             return { "error": "Category already exists" }, 400
         
-        category = Category(name=categoryName, path=filename);
-        orm.commit();
+        category = Category(name=categoryName, path=filename)
+        orm.commit()
         
         return {
             "id": category.id,
@@ -49,7 +49,7 @@ class CategoryController:
 
         for category in categoriesFound:
             category_dict = category.to_dict()
-            category_dict['url'] = f'http://10.0.9.4:3000/category-images/{category_dict["path"]}'
+            category_dict['url'] = f'http://10.0.9.5:3000/category-images/{category_dict["path"]}'
             categories.append(category_dict)
 
         return jsonify(categories)
@@ -84,8 +84,31 @@ class CategoryController:
 
         category.name = category_name
         category.path = filename
-        orm.commit();
+        orm.commit()
 
         if path.exists(old_file_path): remove(old_file_path)
+
+        return {}, 200
+
+    @orm.db_session
+    def delete(request: Request, category_id: int):
+        category = orm.select(c for c in Category if c.id == category_id).first()
+
+        if not category:
+            return {"error": "Make sure your category id is correct"}, 401
+
+        userId = get_jwt_identity()
+        user = User.get(id=userId)
+
+        if not user.admin:
+            return {"error": "You are not authorized to perform this action"}, 401
+
+        file_path = 'uploads/categories/' + category.path
+
+        if path.exists(file_path):
+            remove(file_path)
+
+        category.delete()
+        orm.commit()
 
         return {}, 200

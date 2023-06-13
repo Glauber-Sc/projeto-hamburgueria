@@ -12,7 +12,8 @@ class OrderController:
     @orm.db_session
     def store(request: Request):        
         schema = {
-            'products': {'type': 'list', 'required': True},            
+            'products': {'type': 'list', 'required': True},
+            'description': {'type': 'string', 'required': True}  # Adicionando o campo description ao esquema de validação
         }
         validator = Validator(schema)
         is_valid = validator.validate(request.json)
@@ -27,10 +28,11 @@ class OrderController:
         productsMap = map(extractID, productsBody)
         productsIds = list(productsMap)
         products = list()
-        order_products = list();
+        order_products = list()
 
         order = Order(
-            user_id=userId
+            user_id=userId,
+            description=request.json['description']  # Salvando o valor do campo description no banco de dados
         )
 
         for id in productsIds:
@@ -57,7 +59,7 @@ class OrderController:
             products.append(product)
         
         for product in products:
-            url = f'http://10.0.9.4:3000/product-images/{product["path"]}'
+            url = f'http://10.0.9.5:3000/product-images/{product["path"]}'
 
             new_product = {
                 "id": product['id'],
@@ -70,18 +72,19 @@ class OrderController:
 
             order_products.append(new_product)
 
-        order = {
+        order_data = {
             "user": {
                 "id": user.id,
                 "name": user.name
             },
             "products": order_products,
-            "status": "Pedido realizado"
+            "status": "Pedido realizado",
+            "description": order.description  # Adicionando o campo description aos dados do pedido
         }
 
         orm.commit()
 
-        return order, 201
+        return order_data, 201
      
     @orm.db_session
     def index(request: Request):
@@ -99,7 +102,7 @@ class OrderController:
                 product_category = item.product_id.category_id
                 product['quantity'] = item.quantity
                 product['category'] = product_category.name
-                product['url'] = f'http://10.0.9.4:3000/product-images/{product["path"]}'                
+                product['url'] = f'http://10.0.9.5:3000/product-images/{product["path"]}'                
                 products.append(product)
             
             order['_id'] = orderFound.id
@@ -110,6 +113,7 @@ class OrderController:
                 "id": user.id,
                 "name": user.name
             }
+            order['description'] = orderFound.description  # Adicionando o campo description aos dados do pedido
 
             orders.append(order)
 
@@ -142,6 +146,6 @@ class OrderController:
 
         order.status = new_status
 
-        orm.commit();        
+        orm.commit()        
 
         return { "message": "Status updated successfully" }, 200

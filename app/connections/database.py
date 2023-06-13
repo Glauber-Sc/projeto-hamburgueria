@@ -46,6 +46,7 @@ class Order(db.Entity):
     status = orm.Optional(str, default="Pedido realizado")
     user_id = orm.Required(User)
     items = orm.Set("OrderItem")
+    description = orm.Optional(str)
     createdAt = orm.Required(datetime, default=datetime.now(pytz.timezone('America/Sao_Paulo')))
 
 
