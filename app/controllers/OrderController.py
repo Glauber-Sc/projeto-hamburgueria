@@ -59,7 +59,7 @@ class OrderController:
             products.append(product)
         
         for product in products:
-            url = f'http://127.0.0.1:3000/product-images/{product["path"]}'
+            url = f'https://api-hambuguer.coders4future.com/product-images/{product["path"]}'
 
             new_product = {
                 "id": product['id'],
@@ -102,7 +102,7 @@ class OrderController:
                 product_category = item.product_id.category_id
                 product['quantity'] = item.quantity
                 product['category'] = product_category.name
-                product['url'] = f'http://localhost:3000/product-images/{product["path"]}'                
+                product['url'] = f'https://api-hambuguer.coders4future.com/product-images/{product["path"]}'                
                 products.append(product)
             
             order['_id'] = orderFound.id
